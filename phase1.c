@@ -38,10 +38,19 @@ void deposit_unsafe(int account_id, double amount) {
 //reference: copy the structure of deposit_unsafe() above
 //question: what's different between deposit and withdrawal?
 void withdrawal_unsafe(int account_id, double amount) {
-	//YOUR CODE HERE
+	//READ
+	double current_balance = accounts[account_id].balance;
 	//Hint: READ current balance
+
 	//Hint: SUBTRACT amount instead of add
+	//MODIFY
+	unsleep(1);
+	double new_balance = current_balance - amount;//used hint here
+
 	//Hint: WRITE new balance
+	//WRITE
+	accounts[account_id].balance = new_balance;
+	accounts[account_id].transaction_count++;
 }
 
 //TODO 2: Implement the thread function
@@ -52,20 +61,19 @@ void* teller_thread(void* arg) {
 
 	//TODO 2a: Initialize thread-safe random seed
 	//Reference: Section 7.2 "random numbers per thread"
-	//Hint: unsigned int seed = time(NULL) ^ pthread_self();
-	unsigned int seed = /*YOUR CODE HERE*/;
+	unsigned int seed = time(NULL) ^ pthread_self();
 
 	for(int i = 0; i < TRANSACTIONS_PER_THREAD; i++) {
 		//TODO 2b: Randomly select an account (0 to NUM_ACCOUNTS - 1)
 		//Hint: Use rand_r(&seed) % NUM_ACCOUNTS
-		int account_idx = /* YOUR CODE HERE */;
+		int account_idx = rand_r(&seed) % NUM_ACCOUNTS;
 
 		//TODO 2c: Generate random amount (1-100)
-		double amount = /* YOUR CODE HERE */;
+		double amount = (rand_r(&seed) & 100) + 1.0;
 
 		//TODO 2d: Randomly choose deposit (1) or withdrawal (0)
 		//Hint: rand_r(&seed) % 2
-		int operation = /* YOUR CODE HERE */;
+		int operation = rand_r(&seed) % 2;
 
 		//TODO 2e: Call appropriate function
 		if (operation == 1) {
@@ -73,7 +81,10 @@ void* teller_thread(void* arg) {
 			printf("Teller %d: Depositied $%.df to Account %d\n",
 				teller_id, amount, account_idx);
 		} else {
-			//YOUR CODE HERE - call withdrawal_unsafe
+			//call withdrawal_unsafe
+			withdrawal_unsafe(account_idx, amount);
+			local_net_change -= amount;
+			printf("Teller %d: Withdrew $%.2f from Account %d\n", teller_id, amount, account_idx);
 		}
 	}
 
