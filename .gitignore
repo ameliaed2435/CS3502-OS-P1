@@ -1,0 +1,14 @@
+#compilted files
+*.out
+*.o
+
+#log files
+*.log
+
+#temp files
+*.tmp
+
+#editor backups
+*~
+*.swp
+
