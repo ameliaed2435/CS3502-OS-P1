@@ -40,9 +40,7 @@ void deposit_safe(int account_id, double amount) {
 
 	// ==== CRITICAL SECTION ====
 	//only ONE thread can execute this at a time for this account
-	double current_balance = accounts[account_id].balance;
-	usleep(1);
-	accounts[account_id].balance = current_balance + amount;
+	accounts[account_id].balance += amount;
 	accounts[account_id].transaction_count++;
 	// ==========================
 
@@ -62,9 +60,7 @@ void withdrawal_safe(int account_id, double amount) {
 	pthread_mutex_lock(&accounts[account_id].lock);
 
 	// ==== CRITICAL SECTION ====
-	double current_balance = accounts[account_id].balance;
-	usleep(1);
-	accounts[account_id].balance = current_balance - amount;
+	accounts[account_id].balance -= amount;
 	accounts[account_id].transaction_count++;
 	// ==========================
 
