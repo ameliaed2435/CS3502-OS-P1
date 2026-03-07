@@ -83,7 +83,6 @@ void* teller_thread(void* arg) {
 		} else {
 			//call withdrawal_unsafe
 			withdrawal_unsafe(account_idx, amount);
-			local_net_change -= amount;
 			printf("Teller %d: Withdrew $%.2f from Account %d\n", teller_id, amount, account_idx);
 		}
 	}
@@ -99,8 +98,11 @@ int main() {
 	// TODO 3a: Initialize all accounts
 	// Hint: loop thru accounts array
 	// set: account_id = i, balance = INITIAL_BALANCE, transaction_count = 0
-
-	//YOUR CODE HERE
+	for(int i = 0; i < NUM_ACCOUNTS; i++) {
+		accounts[i].account_id = i;
+		accounts[i].balance = INITIAL_BALANCE;
+		accounts[i].transaction_count = 0;
+	}
 
 	//Display initial state (GIVEN)
 	printf("Initial State:\n");
@@ -111,8 +113,7 @@ int main() {
 	//TODO 3b: Calculate expected final balance
 	//Question: with random deposits/withdrawals, what should total be?
 	// Hint: Total money in system should remain constant!
-	double expected_total = /* YOUR CODE HERE */;
-
+	double expected_total = NUM_ACCOUNTS * INITIAL_BALANCE;
 	printf("\nExpected total: $%2f.\n\n", expected_total);
 
 	//TODO 3c: Create thread and thread ID arrays
@@ -120,12 +121,12 @@ int main() {
 	pthread_t threads[NUM_THREADS];
 	int thread_ids[NUM_THREADS]; // GIVEN: Separate array for IDs
 
-	//TODO 2d: Create all threads
+	//TODO 3d: Create all threads
 	//Reference: man pthread_create
 	//Caution: see Appendix A.2 warning about passing &i in loop!
 	for (int i = 0; i < NUM_THREADS; i++) {
 		thread_ids[i] = i; //GIVEN: store ID persistently
-		// YOUR pthread_create CODE HERE
+		pthread_create(&threads[i], NULL, teller_thread, &thread_ids[i];
 		// Format: pthread_create(&threads[i], NULL, teller_thread, & thread_ids[i]);
 	}
 
@@ -133,7 +134,7 @@ int main() {
 	// Reference: man pthread_join
 	//Question: What happens if you skip this step?
 	for (int i = 0; i < NUM_THREADS; i++) {
-		// YOUR pthread_join CODE HERE
+		pthread_join(threads[i], NULL);
 	}
 
 	//TODO 3f: Calculate and display results
@@ -153,6 +154,10 @@ int main() {
 	//TODO 3g: Add race condition detection message
 	// If expected != actual, print "RACE CONDITION DETECTED!"
 	// Instruct user to run multiple times
+	if (expected_total != actual_total) {
+		printf("\nRACE CONDITION DETECTED!");
+	}
+	printf("Run multiple times to observe Different results.");
 
 	return 0;
 }
