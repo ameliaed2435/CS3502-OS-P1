@@ -121,6 +121,11 @@ int main() {
 	pthread_t threads[NUM_THREADS];
 	int thread_ids[NUM_THREADS]; // GIVEN: Separate array for IDs
 
+	// Performance Measurement Start(Added during phase 2)
+	struct timespec start, end;
+	clock_gettime(CLOCK_MONOTONIC, &start);
+
+
 	//TODO 3d: Create all threads
 	//Reference: man pthread_create
 	//Caution: see Appendix A.2 warning about passing &i in loop!
@@ -137,6 +142,11 @@ int main() {
 		pthread_join(threads[i], NULL);
 	}
 
+	// Performance Measurement End(Added during phase 2)
+	clock_gettime(CLOCK_MONOTONIC, &end);
+	double elapsed = (end.tv_sec - start.tv_sec) +
+			 (end.tv_nsec - start.tv_nsec) /1e9;
+
 	//TODO 3f: Calculate and display results
 	printf("\n=== Final Results ===\n");
 	double actual_total = 0.0;
@@ -150,6 +160,9 @@ int main() {
 	printf("\nExpected total: $%.2f\n", expected_total);
 	printf("Actual total:	$%.2f\n", actual_total);
 	printf("Difference:	$%.2f\n", actual_total - expected_total);
+
+	//print performance time
+	printf("\nExecution Time: %.4f seconds\n", elapsed);
 
 	//TODO 3g: Add race condition detection message
 	// If expected != actual, print "RACE CONDITION DETECTED!"
