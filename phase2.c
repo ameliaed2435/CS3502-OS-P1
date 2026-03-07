@@ -40,7 +40,9 @@ void deposit_safe(int account_id, double amount) {
 
 	// ==== CRITICAL SECTION ====
 	//only ONE thread can execute this at a time for this account
-	accounts[account_id].balance += amount;
+	double current_balance = accounts[account_id].balance;
+	usleep(1);
+	accounts[account_id].balance = current_balance + amount;
 	accounts[account_id].transaction_count++;
 	// ==========================
 
@@ -60,7 +62,9 @@ void withdrawal_safe(int account_id, double amount) {
 	pthread_mutex_lock(&accounts[account_id].lock);
 
 	// ==== CRITICAL SECTION ====
-	accounts[account_id].balance -= amount;
+	double current_balance = accounts[account_id].balance;
+	usleep(1);
+	accounts[account_id].balance = current_balance - amount;
 	accounts[account_id].transaction_count++;
 	// ==========================
 
@@ -81,7 +85,7 @@ void* teller_thread(void* arg) {
 		int account_idx = rand_r(&seed) % NUM_ACCOUNTS;
 
 		// Generate random amount (1-100)
-		double amount = (rand_r(&seed) & 100) + 1.0;
+		double amount = (rand_r(&seed) % 100) + 1.0;
 
 		// Randomly choose deposit (1) or withdrawal (0)
 		int operation = rand_r(&seed) % 2;
