@@ -78,7 +78,7 @@ void* teller_thread(void* arg) {
 		//TODO 2e: Call appropriate function
 		if (operation == 1) {
 			deposit_unsafe(account_idx, amount);
-			printf("Teller %d: Depositied $%.df to Account %d\n",
+			printf("Teller %d: Depositied $%.2f to Account %d\n",
 				teller_id, amount, account_idx);
 		} else {
 			//call withdrawal_unsafe
@@ -157,7 +157,7 @@ int main() {
 	if (expected_total != actual_total) {
 		printf("\nRACE CONDITION DETECTED!");
 	}
-	printf("Run multiple times to observe Different results.");
+	printf("\nRun multiple times to observe Different results.\n\n");
 
 	return 0;
 }
