@@ -4,7 +4,9 @@
 #To start, download and place all phase c files into current directory
 
 #For compiling phase 1: gcc -Wall -pthread phase1.c -o phase1
+
 #For running phase 1: ./phase1
 
 #For compiling phase 2: gcc -Wall -pthread phase2.c -o phase2
+
 #For running phase 2: ./phase2
