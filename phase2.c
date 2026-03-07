@@ -146,6 +146,8 @@ int main() {
 	//Reference: Section 7.2 "Performance Measurement"
 	//Hint: Use clock_gettime(CLOCK_MONOTONIC, &start
 	//Placed here to make sure the overhead of synchronization, specifically, is measured
+	struct timespec start, end;
+	clock_gettime(CLOCK_MONOTONIC, &start);
 
 	// Create all threads
 	for (int i = 0; i < NUM_THREADS; i++) {
@@ -160,6 +162,9 @@ int main() {
 	}
 
 	//end performance measurement HERE, before results are printed
+	clock_gettime(CLOCK_MONOTONIC, &end);
+	double elapsed = (end.tv_sec - start.tv_sec) +
+			 (end.tv_nsec - start.tv_nsec) / 1e9;
 
 	// Calculate and display results
 	printf("\n=== Final Results ===\n");
@@ -176,6 +181,7 @@ int main() {
 	printf("Difference:	$%.2f\n", actual_total - expected_total);
 
 	// Print performance output here
+	printf("\nExecution Time: %.4f seconds\n", elapsed);
 
 	// race condition detection message
 	// Instruct user to run multiple times
