@@ -26,7 +26,7 @@ void deposit_unsafe(int account_id, double amount) {
 	double current_balance = accounts[account_id].balance;
 
 	// MODIFY (simulate processing time)
-	unsleep(1); //this increases likelihood of race condition!
+	usleep(1); //this increases likelihood of race condition!
 	double new_balance = current_balance + amount;
 
 	// WRITE (another thread might have changed balance between WRITE!
@@ -44,7 +44,7 @@ void withdrawal_unsafe(int account_id, double amount) {
 
 	//Hint: SUBTRACT amount instead of add
 	//MODIFY
-	unsleep(1);
+	usleep(1);
 	double new_balance = current_balance - amount;//used hint here
 
 	//Hint: WRITE new balance
@@ -126,7 +126,7 @@ int main() {
 	//Caution: see Appendix A.2 warning about passing &i in loop!
 	for (int i = 0; i < NUM_THREADS; i++) {
 		thread_ids[i] = i; //GIVEN: store ID persistently
-		pthread_create(&threads[i], NULL, teller_thread, &thread_ids[i];
+		pthread_create(&threads[i], NULL, teller_thread, &thread_ids[i]);
 		// Format: pthread_create(&threads[i], NULL, teller_thread, & thread_ids[i]);
 	}
 
@@ -143,7 +143,7 @@ int main() {
 
 	for (int i = 0; i < NUM_ACCOUNTS; i++) {
 		printf("Account %d: $%.2f (%d transactions) \n",
-			i, accounts[i].balance, accounts[i].transaction_count;
+			i, accounts[i].balance, accounts[i].transaction_count);
 		actual_total += accounts[i].balance;
 	}
 
