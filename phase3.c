@@ -3,8 +3,10 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+// === added from guidelines at the end of the instruction set
 #include <errno.h>
 #include <string.h>
+// =======
 
 #define NUM_ACCOUNTS 2
 #define NUM_THREADS 2 //changed to help force deadlock
@@ -21,6 +23,9 @@ typedef struct {
 
 //Global shared array
 Account accounts[NUM_ACCOUNTS];
+
+//tracker for detecting deadlock(for todo 3)
+int threads_finished = 0;
 
 // Mutex initialization (given)
 void initialize_accounts() {
@@ -136,7 +141,7 @@ int main() {
 
 	cleanup_mutexes();
 
-	// TODO 4: Document coffman conditions
+	// TODO 4: Document coffman conditions(include graph in report)
 
 	return 0;
 }
