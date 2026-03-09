@@ -44,7 +44,7 @@ void transfer_deadlock(int from_id, int to_id, double amount) {
 	usleep(100);
 
 	//try to lock destination account
-	printf("Thread %ld: Waiting for account %d\n", pthread_self(), to_id();
+	printf("Thread %ld: Waiting for account %d\n", pthread_self(), to_id);
 	pthread_mutex_lock(&accounts[to_id].lock); // DEADLOCK
 
 	//Transfer (never reached if deadlocked)
@@ -66,11 +66,21 @@ void transfer_deadlock(int from_id, int to_id, double amount) {
 }
 
 // TODO 2: Create threads that will deadlock
+// Instruction set guidelines:
+//Thread 1: transfer(0, 1, amount) // Locks 0, wants 1
+//Thread 2: transfer(1, 0, amount) // Locks 1, wants 0
+//This causes CIRCULAR WAIT!
 void* deadlock_thread(void* arg) {
 	int thread_id = *(int*) arg;
 	double amount = 100.0;
 
-	// My code
+	if (thread_id == 0) {//if-else if statement to help prevent race conditions
+		//locks 0, wants 1
+		transfer_deadlock(0, 1, amount);
+	} else if (thread_id == 1) {
+		//locks 1, wants 0
+		transfer_deadlock(1, 0, amount);
+	}
 
 	return NULL;
 }
@@ -84,8 +94,8 @@ void cleanup_mutexes() {
 
 //main function
 //using phase 3 instructions and phase 2 finished file as reference
-int main()
-	printf("=== Phase 3: Deadlock Scenario (Implementation) ==="
+int main() {
+	printf("=== Phase 3: Deadlock Scenario (Implementation) ===\n\n");
 
 	initialize_accounts();
 
@@ -118,10 +128,10 @@ int main()
 	for(int i = 0; i < NUM_ACCOUNTS; i++) {
 		printf("Account %d: $%.2f (%d transactions) \n",
 			i, accounts[i].balance, accounts[i].transaction_count);
-		acount_total += accounts[i].balance;
+		actual_total += accounts[i].balance;
 	}
 
-	printf("Actual total: $%.2f, actual_total);
+	printf("Actual total: $%.2f, actual_total");
 	//diff btwn actual and expected total not needed since the focus of this phase is deadlock
 
 	cleanup_mutexes();
